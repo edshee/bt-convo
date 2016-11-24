@@ -1,0 +1,8 @@
+{
+ "output": {
+   "text": "Which account do you want to transfer to?"
+ },
+ "context": {
+  "from_acc": "@account_type"
+ }
+}

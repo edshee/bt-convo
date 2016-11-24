@@ -1,0 +1,102 @@
+[
+    {
+        "id": "8b4980dd.0dca5",
+        "type": "tab",
+        "label": "Flow 1"
+    },
+    {
+        "id": "1315c9c6.39ab06",
+        "type": "websocket-listener",
+        "z": "",
+        "path": "/ws/audio",
+        "wholemsg": "false"
+    },
+    {
+        "id": "50a2c80b.7dd2b8",
+        "type": "http in",
+        "z": "8b4980dd.0dca5",
+        "name": "",
+        "url": "/api/audio",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 153.5,
+        "y": 146,
+        "wires": [
+            [
+                "b698065d.063f68",
+                "822337.63cc1cc8"
+            ]
+        ]
+    },
+    {
+        "id": "b698065d.063f68",
+        "type": "function",
+        "z": "8b4980dd.0dca5",
+        "name": "grab payload",
+        "func": "msg.payload = msg.req.query.text;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360.5,
+        "y": 129,
+        "wires": [
+            [
+                "df3ae7f6.7991f8"
+            ]
+        ]
+    },
+    {
+        "id": "822337.63cc1cc8",
+        "type": "http response",
+        "z": "8b4980dd.0dca5",
+        "name": "",
+        "x": 361.5,
+        "y": 184,
+        "wires": []
+    },
+    {
+        "id": "25060444.20fa2c",
+        "type": "function",
+        "z": "8b4980dd.0dca5",
+        "name": "put speech in payload",
+        "func": "msg.payload = msg.speech;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 733.5,
+        "y": 129,
+        "wires": [
+            [
+                "96c70720.2fb7e8"
+            ]
+        ]
+    },
+    {
+        "id": "df3ae7f6.7991f8",
+        "type": "watson-text-to-speech",
+        "z": "8b4980dd.0dca5",
+        "name": "",
+        "lang": "en-GB",
+        "langhidden": "en-GB",
+        "voice": "en-GB_KateVoice",
+        "voicehidden": "",
+        "format": "audio/wav",
+        "password": "",
+        "x": 531.5,
+        "y": 63,
+        "wires": [
+            [
+                "25060444.20fa2c"
+            ]
+        ]
+    },
+    {
+        "id": "96c70720.2fb7e8",
+        "type": "websocket out",
+        "z": "8b4980dd.0dca5",
+        "name": "",
+        "server": "1315c9c6.39ab06",
+        "client": "",
+        "x": 950.5,
+        "y": 202,
+        "wires": []
+    }
+]

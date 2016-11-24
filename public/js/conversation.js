@@ -3,6 +3,8 @@
 /* eslint no-unused-vars: "off" */
 /* global Api: true, Common: true*/
 
+var locked = true;
+
 var ConversationPanel = (function() {
   var settings = {
     selectors: {
@@ -20,14 +22,16 @@ var ConversationPanel = (function() {
   // Publicly accessible methods defined
   return {
     init: init,
-    inputKeyDown: inputKeyDown
+    inputKeyDown: inputKeyDown,
+    displayMessage: displayMessage
   };
 
   // Initialize the module
   function init() {
     chatUpdateSetup();
-    Api.sendRequest( '', null );
     setupInputBox();
+    refreshBalances();
+    authenticateVoice();
   }
   // Set up callbacks on payload setters in Api module
   // This causes the displayMessage function to be called when messages are sent / received
@@ -114,6 +118,7 @@ var ConversationPanel = (function() {
 
   // Display a user or Watson message that has just been sent/received
   function displayMessage(newPayload, typeValue) {
+    console.log(typeValue);
     var isUser = isUserMessage(typeValue);
     var textExists = (newPayload.input && newPayload.input.text)
       || (newPayload.output && newPayload.output.text);
@@ -131,6 +136,11 @@ var ConversationPanel = (function() {
         });
       }
 
+      if (isUser === false) {
+        // Send the new text to the speeh to text api
+        $.get('http://aibtts.eu-gb.mybluemix.net/api/audio?text='+newPayload.output.text);
+      }
+
       messageDivs.forEach(function(currentDiv) {
         chatBoxElement.appendChild(currentDiv);
         // Class to start fade in animation
@@ -138,6 +148,9 @@ var ConversationPanel = (function() {
       });
       // Move chat to the most recent messages when new messages are added
       scrollToChatBottom();
+      if (typeValue==='watson') {
+        addCompute(newPayload);
+      }
     }
   }
 
@@ -160,6 +173,7 @@ var ConversationPanel = (function() {
       textArray = [textArray];
     }
     var messageArray = [];
+
 
     textArray.forEach(function(currentText) {
       if (currentText) {
@@ -208,8 +222,9 @@ var ConversationPanel = (function() {
 
   // Handles the submission of input
   function inputKeyDown(event, inputBox) {
+
     // Submit on enter key, dis-allowing blank messages
-    if (event.keyCode === 13 && inputBox.value) {
+    if (event.keyCode === 13 && inputBox.value && locked === false) {
       // Retrieve the context from the previous server response
       var context;
       var latestResponse = Api.getResponsePayload();
@@ -223,6 +238,96 @@ var ConversationPanel = (function() {
       // Clear input box for further messages
       inputBox.value = '';
       Common.fireEvent(inputBox, 'input');
+      document.getElementById('textInput').value = '';
+    }
+
+    // Check if user is authenticated
+    if (event.keyCode === 13 && inputBox.value && locked === true) {
+      if(inputBox.value === "they are not for eating") {
+        var message = {
+          input: {
+            text: inputBox.value
+          }
+        };
+        ConversationPanel.displayMessage(message, 'user');
+        setTimeout(function() {
+          var message = {
+            output: {
+              text: "Successfully authenticated against voice recognition and memorable phrase"
+            }
+          };
+          ConversationPanel.displayMessage(message, 'watson');
+        }, 2000)
+        setTimeout(function() {
+          Api.sendRequest( '', null );
+        }, 6000)
+        locked = false;
+
+      } else {
+        var message = {
+          input: {
+            text: inputBox.value
+          }
+        };
+        ConversationPanel.displayMessage(message, 'user');
+      }
+      document.getElementById('textInput').value = '';
     }
   }
 }());
+
+// reset the balances of the accounts
+function refreshBalances() {
+  currentAccount = 1782.44;
+  jointAccount = 212.35;
+}
+
+function addCompute(newPayload) {
+  var text = newPayload.output.text[0];
+  setTimeout(function () {
+    if (text==="Retrieving the balance on your current account...") {
+      var message = {
+        output: {
+          text: "Your current account balance is: €" + currentAccount
+        }
+      };
+      ConversationPanel.displayMessage(message, 'watson');
+    } else if (text==="Retrieving the balance on your joint account...") {
+      var message = {
+        output: {
+          text: "Your joint account balance is: €" + jointAccount
+        }
+      };
+      ConversationPanel.displayMessage(message, 'watson');
+    } else if (newPayload.context.from_acc && newPayload.context.to_acc && newPayload.output.text[0] === "Ok, Transferring now!") {
+      var message = {
+        output: {
+          text: "Successfully transferred " + newPayload.input.text + " from your " + newPayload.context.from_acc + " account to your " + newPayload.context.to_acc + " account."
+        }
+      };
+      var amount = newPayload.input.text.replace('€', '');
+      amount = parseFloat(amount);
+      var from = newPayload.context.from_acc;
+      if (from==="joint") {
+        jointAccount -= amount;
+        currentAccount += amount;
+      } else {
+        currentAccount -= amount;
+        jointAccount += amount;
+      }
+      jointAccount = Math.round(jointAccount*100)/100;
+      currentAccount = Math.round(currentAccount*100)/100;
+      ConversationPanel.displayMessage(message, 'watson');
+
+    }
+  }, 5000);
+}
+
+function authenticateVoice() {
+  var message = {
+    output: {
+      text: "Please speak your memorable phrase to unlock voice banking"
+    }
+  };
+  ConversationPanel.displayMessage(message, 'watson');
+}

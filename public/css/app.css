@@ -15,16 +15,67 @@ div {
   line-height: 1.25rem;
 }
 
+.right {
+  height: 2.5rem;
+  max-width: 15%;
+  padding-left: 0.125rem;
+  margin-bottom: -0.125rem;
+  float: right;
+}
+
+#div_language {
+  height: 2rem;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+}
+
+#div_language select {
+  height: 100%;
+  width: 45%;
+  border: none;
+  font-size: 0.8rem;
+  color: #661A54;
+  background-color: #EEE;
+}
+
+#div_language select:focus {
+  outline: none;
+}
+
+#select_dialect {
+  float: right;
+}
+
+#select_language {
+  float: left;
+}
+
+#start_button img {
+  height: 100%;
+  width: auto;
+}
+
+#start_button:focus {
+  border: none;
+  outline: none;
+}
+
+#start_button {
+  background-color: rgba(0,0,0,0);
+  border: none;
+}
+
 #view-change-button {
   display: inline-block;
   position: absolute;
-  width: 3.125rem;
-  height: 3.125rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 1.5625rem;
-  background: #AB72F8;
+  background: #661A54;
   top: 0.3125rem;
   right: 0.3125rem;
-  line-height: 3.125rem;
+  line-height: 2.5rem;
   vertical-align: middle;
 }
 
@@ -72,7 +123,7 @@ div {
   padding: 0.9375rem 0 0.625rem 0;
   margin: auto;
   text-align: left;
-  max-width: 25rem;
+  max-width: 50rem;
   min-width: 9.375rem;
 }
 
@@ -80,7 +131,7 @@ div {
   margin: 0.75rem;
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100% - 4rem);
+  height: calc(100% - 6rem);
 }
 
 .message-inner {
@@ -118,7 +169,7 @@ div {
   color: #fff;
   letter-spacing: 0.015rem;
   line-height: 1.3125rem;
-  background: #00B4A0;
+  background: #09AE7A;
   border-radius: 1.25rem;
   border-bottom-right-radius: 0;
   text-align: left;
@@ -197,7 +248,7 @@ div {
   letter-spacing: 0.015rem;
   line-height: 1.3125rem;
   height: 2.5rem;
-  max-width: 100%;
+  max-width: 85%;
   padding-left: 0.125rem;
   margin-bottom: -0.125rem;
   font-family: Helvetica Neue for IBM, Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -205,7 +256,7 @@ div {
 }
 
 #textInput.underline {
-  border-bottom: 2px solid #00B4A0;
+  border-bottom: 2px solid #09AE7A;
 }
 
 ::-webkit-input-placeholder {
@@ -254,9 +305,8 @@ input:-moz-placeholder {
   color: #fff;
   overflow-x: auto;
 
-  width: 45%;
-  max-width: 32.0625rem;
-  min-width: 29.6875rem;
+
+  width: 0px;
 }
 
 #payload-column.full {
@@ -322,7 +372,7 @@ html{
   }
 
   .chat-column {
-    padding-top: 4rem;
+    padding-top: 3rem;
   }
 
   #payload-column {
