@@ -1,15 +1,11 @@
 ---
-declared-services:
-  conversation-simple-demo-test1:
-    label: conversation
-    plan: free
 applications:
-- name: aib-convo
+- name: bt-convo
   command: npm start
   path: .
   memory: 256M
   instances: 1
   services:
-  - Conversation-hf
+  - conversation-bt
   env:
     NPM_CONFIG_PRODUCTION: false
