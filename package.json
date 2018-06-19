@@ -8,7 +8,9 @@
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha",
     "lint": "eslint .",
     "autofix": "eslint --fix .",
-    "codecov": "npm run test && (codecov || true)"
+    "codecov": "npm run test && (codecov || true)",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "license": "Apache-2.0",
   "dependencies": {
@@ -17,11 +19,12 @@
     "express": "4.13.4",
     "body-parser": "1.15.1",
     "watson-developer-cloud": "^2.4.6",
-    "cloudant": "1.4.1",
+    "cloudant": "1.6.0",
     "express-csv": "0.6.0",
-    "nano" : "*",
+    "nano": "*",
     "uuid": "2.0.2",
-    "vcap_services": "^0.2.0"
+    "vcap_services": "^0.2.0",
+    "snyk": "^1.83.0"
   },
   "devDependencies": {
     "babel-eslint": "^6.0.4",
@@ -35,5 +38,6 @@
   },
   "engine": {
     "node": ">= 4.2.4"
-  }
+  },
+  "snyk": true
 }
